@@ -1,0 +1,26 @@
+name: Despliegue de App Estática
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3
+
+      - name: Construir la imagen de Docker
+        run: docker build -t mi-app-web .
+
+      - name: Simular el despliegue de Docker
+        run: |
+          echo "Desplegando la aplicación..."
+          docker run --rm -d -p 8080:80 --name mi-app mi-app-web
+          echo "Aplicación desplegada en http://localhost:8080"
+          sleep 5 # Espera 5 segundos para que el servidor inicie
+          curl http://localhost:8080 | grep "Hola, mundo DevOps!"
+          docker stop mi-app
